@@ -626,7 +626,7 @@ function render() {
                     clef: "treble", 
                     keys: up.map(n => {
                         const note = shiftNote(n);
-                        return note.replace('#', '#/').toLowerCase() + (note.includes('#') ? '' : '/');
+                        return note.toLowerCase().replace(/([a-g])(#?)(\d+)/, '$1$2/$3');
                     }),
                     duration: "16"
                 });
@@ -641,7 +641,7 @@ function render() {
                     clef: "bass", 
                     keys: down.map(n => {
                         const note = shiftNote(n);
-                        return note.replace('#', '#/').toLowerCase() + (note.includes('#') ? '' : '/');
+                        return note.toLowerCase().replace(/([a-g])(#?)(\d+)/, '$1$2/$3');
                     }),
                     duration: "16"
                 });
@@ -658,9 +658,10 @@ function render() {
             VF.Beam.generateBeams(bassNotes.filter(n => n.getDuration() !== "b"))
         ];
 
+        const maxBeats = Math.max(m.length, 6);
         new VF.Formatter().joinVoices([
-            new VF.Voice({num_beats: 6, beat_value: 16}).addTickables(trebleNotes),
-            new VF.Voice({num_beats: 6, beat_value: 16}).addTickables(bassNotes)
+            new VF.Voice({num_beats: maxBeats, beat_value: 16}).addTickables(trebleNotes),
+            new VF.Voice({num_beats: maxBeats, beat_value: 16}).addTickables(bassNotes)
         ]).format([topStave, bottomStave], 350);
 
         trebleNotes.forEach(n => n.setContext(context).draw());
