@@ -671,26 +671,12 @@ function render() {
             VF.Beam.generateBeams(bassNotes.filter(n => n.getDuration() !== "b"))
         ];
 
-        const TICKS_PER_SIXTEENTH = 256; // Standard VexFlow ticks
-        const VOICE_TICKS = 6 * TICKS_PER_SIXTEENTH; // 3/8 time = 6 sixteenths
-        
-        const tVoice = new VF.Voice({num_beats: 6, beat_value: 16});
-        const bVoice = new VF.Voice({num_beats: 6, beat_value: 16});
+        const totalBeats = Math.max(m.length, 1);
+        const tVoice = new VF.Voice({num_beats: totalBeats, beat_value: 16});
+        const bVoice = new VF.Voice({num_beats: totalBeats, beat_value: 16});
         
         tVoice.addTickables(trebleNotes);
         bVoice.addTickables(bassNotes);
-
-        // PAD VOICES IF UNDERFLOWING (Critical fix for VexFlow crash)
-        const padVoice = (v) => {
-            let totalTicks = v.getTickables().reduce((sum, t) => sum + t.getTicks().value(), 0);
-            while (totalTicks < VOICE_TICKS) {
-                const gn = new VF.GhostNote({ duration: "16" });
-                v.addTickable(gn);
-                totalTicks += gn.getTicks().value();
-            }
-        };
-        padVoice(tVoice);
-        padVoice(bVoice);
 
         new VF.Formatter().joinVoices([tVoice, bVoice]).format([topStave, bottomStave], 350);
 
