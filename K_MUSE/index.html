@@ -40,25 +40,12 @@
     font-size: 11px; letter-spacing: 1px; min-width: 45px; text-align: center;
   }
   #zc .divider { width: 1px; height: 16px; background: rgba(255,255,255,0.3); margin: 0 4px; }
+  #hdr { text-align: center; margin-top: 70px; font-family: 'Times New Roman', serif; color: #000; z-index: 50; position: relative; transition: color 0.5s; }
+  #hdr h1 { font-size: 30px; font-weight: normal; font-style: italic; margin: 0 0 4px 0; }
+  #hdr h2 { font-size: 17px; font-weight: normal; margin: 0; color: #444; }
+  #hdr .sub { position: absolute; right: 8%; top: 6px; text-align: right; font-size: 13px; line-height: 1.5; color: #333; }
 
-  #hdr { text-align: center; margin-top: 80px; font-family: 'Times New Roman', serif; color: #000; z-index: 50; position: relative; transition: color 0.5s; }
-  #hdr h1 { font-size: 36px; font-weight: normal; font-style: italic; margin: 0 0 4px 0; letter-spacing: -1px; }
-  #hdr h2 { font-size: 18px; font-weight: normal; margin: 0; color: #555; letter-spacing: 2px; text-transform: uppercase; }
-  #hdr .sub { position: absolute; right: 8%; top: 6px; text-align: right; font-size: 13px; line-height: 1.6; color: #444; }
-
-  #s { 
-    position: relative; 
-    width: 100%; 
-    z-index: 10; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    margin-top: 40px; 
-    margin-bottom: 200px; 
-    gap: 0;
-    scroll-snap-type: y mandatory;
-  }
-  
+  #s { position: relative; top: 0; left: 0; width: 100%; z-index: 5; display: flex; flex-direction: column; align-items: center; margin-top: 20px; margin-bottom: 60px; }
   #fx { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; width: 100vw; height: 100vh; }
 
   /* Page Smoothing - Refined for Pure Smoothness */
@@ -180,23 +167,29 @@
 
 <div id="hdr">
   <h1>Für Elise in A Minor</h1>
-  <h2>Ludwig van Beethoven</h2>
-  <div class="sub">WoO 59<br>(1770–1827)<br>STABILIZED KERNEL v2.1</div>
+  <h2>WoO 59</h2>
+  <div class="sub">Ludwig van Beethoven<br>(1770–1827)</div>
 </div>
 
 <div id="s"></div>
 <canvas id="fx"></canvas>
 
 <div id="guide">
-  <h3>Protocol: Data Integration</h3>
-  <p>The kernel expects a JSON array of note objects. High-frequency updates are stabilized via the Muse-Clone rendering pipeline.</p>
-  <pre>
-[
-  { "type": "note", "note": "E5", "time": 0.738, "duration": 0.22 },
-  { "type": "note", "note": "D#5", "time": 0.933, "duration": 0.20 }
-]
-  </pre>
-  <p>Notes within <code>0.05s</code> delta are clustered into chords. Octaves 4+ default to G-Clef; Octaves 3- default to F-Clef.</p>
+  <h3>How to expand the note array</h3>
+  <p>Each entry in <code>var d</code> follows this format:</p>
+  <pre>{type: "note",  note: "C#5",  time: 1.316,  duration: 0.188}</pre>
+  <p>
+    <strong>note</strong> — pitch + octave. Sharps use <code>#</code> (e.g. <code>"D#5"</code>, <code>"G#2"</code>).<br>
+    <strong>time</strong> — seconds from the start of the piece. One sixteenth note ≈ 0.188s at this tempo.<br>
+    <strong>duration</strong> — length in seconds. Used loosely (VexFlow derives duration from slot spacing).
+  </p>
+  <p>Common durations at ~80 BPM (sixteenth = 0.188s, 3/8 time):</p>
+  <pre>Sixteenth  = 0.188   →  slot step ×1
+Eighth     = 0.376   →  slot step ×2
+Quarter    = 0.752   →  slot step ×4
+D. Quarter = 1.128   →  fills one full 3/8 measure</pre>
+  <p>Notes within 0.05s of each other are treated as a chord. Octave 4+ renders in the treble staff; octave 3 and below in the bass staff.</p>
+  <p>Paste your JSON array from the Aether Piano MIDI export directly into <code>var d = [ ... ]</code>.</p>
 </div>
 
 <script type="module">
@@ -249,6 +242,19 @@ const MEASURE_DURATION = SEC_PER_QUARTER * 1.5; // 3/8 time
 
 window.measures = [];
 window.octaveShift = 0;
+
+var d = [
+  { "type": "note", "note": "E5", "time": 0.73899275, "duration": 0.22012550000000008 },
+  { "type": "note", "note": "D#5", "time": 0.9339610500000001, "duration": 0.20754689999999998 },
+  { "type": "note", "note": "E5", "time": 1.1383633, "duration": 0.2201255000000002 },
+  { "type": "note", "note": "D#5", "time": 1.31131905, "duration": 0.1918236500000012 },
+  { "type": "note", "note": "E5", "time": 1.4968534000000002, "duration": 0.23584874999999994 },
+  { "type": "note", "note": "B4", "time": 1.68238775, "duration": 0.20440225000000023 },
+  { "type": "note", "note": "D5", "time": 1.86477745, "duration": 0.18867900000000004 },
+  { "type": "note", "note": "C5", "time": 2.0566011000000004, "duration": 0.23584874999999972 },
+  { "type": "note", "note": "A2", "time": 2.24842475, "duration": 0.1792450500000046 },
+  { "type": "note", "note": "A4", "time": 2.25471405, "duration": 0.46855285 }
+];
 
 // ─── PROT:DATA ─────────────────────────────────────────────────────────────
 const container = document.getElementById('s');
@@ -600,6 +606,7 @@ function render() {
     log("KERNEL STABILIZED // " + measures.length + " MEASURES ACTIVE");
 }
 
+window.measures = clusterNotes(d);
 render();
 </script>
 </body>
