@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Inter:wght@300;400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-Dlu-bU09.js"></script>
+  <script type="module" crossorigin src="./assets/index-ws5LZkwc.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-Bz3rgqT0.css">
 </head>
 <body>
@@ -115,7 +115,11 @@
           <div class="lib-col lib-col-songs">
             <h3>Stored <span class="count-badge" id="local-count">0</span></h3>
             <div id="local-song-list" class="song-list"></div>
-            <h3 style="margin-top:1.5rem">Downloaded <span class="count-badge" id="online-count">0</span></h3>
+            <h3 style="margin-top:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+              <span>Downloaded <span class="count-badge" id="online-count">0</span></span>
+              <button id="load-midi-btn" class="text-btn" style="font-size:0.7rem; padding:2px 8px; border:1px solid var(--border); border-radius:4px;">+ Load .mid</button>
+            </h3>
+            <input type="file" id="midi-upload" accept=".mid,.midi" style="display:none;">
             <div id="online-song-list" class="song-list"></div>
           </div>
         </div>
