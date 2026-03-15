@@ -77,5 +77,5 @@ export const CURATED_SONGS = [
 export const COMPOSERS = [
     'Beethoven','Mozart','Bach','Chopin','Liszt','Debussy','Satie',
     'Rachmaninoff','Tchaikovsky','Ravel','Schubert','Brahms',
-    'Gershwin','Einaudi','Glass','Yiruma','Satie','Grieg','Aurora',
+    'Grieg','Vivaldi','Handel','Haydn',
 ];
