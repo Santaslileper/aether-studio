@@ -468,7 +468,14 @@ mUp.addEventListener('change', async (e) => {
                 data = JSON.parse(ev.target.result);
                 if (data.data) data = data.data; 
             } else {
-                const midi = new Midi(ev.target.result);
+                console.log("PARSING MIDI DATA...");
+                // Handle different ESM import structures
+                let MidiConstructor = Midi;
+                if (typeof MidiConstructor !== 'function' && MidiConstructor.Midi) {
+                    MidiConstructor = MidiConstructor.Midi;
+                }
+                
+                const midi = new MidiConstructor(ev.target.result);
                 data = [];
                 midi.tracks.forEach(track => {
                     track.notes.forEach(note => {
