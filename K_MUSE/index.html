@@ -203,7 +203,7 @@ D. Quarter = 1.128   →  fills one full 3/8 measure</pre>
 
 <script type="module">
 import * as Tone from 'https://esm.sh/tone@15.1.22';
-import { Midi } from 'https://esm.sh/@tonejs/midi@2.0.28';
+import { Midi } from 'https://esm.sh/@tonejs/midi';
 import { CURATED_SONGS } from '../js/constants.js';
 
 let currentSong = null;
@@ -466,7 +466,7 @@ mUp.addEventListener('change', async (e) => {
             let data;
             if (file.name.endsWith('.json')) {
                 data = JSON.parse(ev.target.result);
-                if (data.data) data = data.data; // Handle studio export wrapper
+                if (data.data) data = data.data; 
             } else {
                 const midi = new Midi(ev.target.result);
                 data = [];
@@ -476,26 +476,27 @@ mUp.addEventListener('change', async (e) => {
                             type: 'note',
                             note: note.name,
                             time: note.time,
-                            duration: note.duration,
-                            velocity: note.velocity
+                            duration: note.duration
                         });
                     });
                 });
             }
             
-            if (!data || !data.length) throw new Error("INVALID DATA");
+            if (!data || !data.length) throw new Error("NO NOTE DATA");
             
             document.getElementById('hdr').querySelector('h1').innerText = file.name.split('.')[0].replace(/_/g, ' ').toUpperCase();
-            document.getElementById('hdr').querySelector('h2').innerText = "LOCAL UPLOAD";
+            document.getElementById('hdr').querySelector('h2').innerText = "LOCAL FILE LOADED";
             
             window.measures = clusterNotes(data);
             window.currentPage = 0;
             render();
-            log("STABILIZED: " + file.name.toUpperCase());
+            log("DATA STABILIZED // " + file.name.toUpperCase());
         } catch (err) {
-            log("LOAD ERROR: " + err.message);
+            console.error(err);
+            log("LOAD FAILED: " + err.message);
         }
     };
+    reader.onerror = () => log("FILE READ ERROR");
     if (file.name.endsWith('.json')) reader.readAsText(file);
     else reader.readAsArrayBuffer(file);
 });
