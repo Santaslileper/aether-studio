@@ -265,6 +265,36 @@
     font-style: italic;
 }
 
+/* Grouping Styles */
+.library-group {
+    margin-bottom: 2rem;
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent, #e2b857);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(226, 184, 87, 0.2);
+}
+
+.group-header .icon {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.group-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
 /* Scrollbar styling */
 .library-main::-webkit-scrollbar {
     width: 8px;

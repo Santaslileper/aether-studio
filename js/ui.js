@@ -165,6 +165,8 @@ export function setupUI(handlers) {
         });
     });
 
+    const libraryModal = document.getElementById('library-modal');
+
     document.getElementById('library-open').addEventListener('click', () => { 
         updateLibraryUI(); 
         libraryModal.classList.remove('hidden'); 
@@ -188,9 +190,17 @@ export function setupUI(handlers) {
             }
         }
         if (btn && item) {
+            e.stopPropagation();
             const key = item.dataset.key;
-            if (btn.classList.contains('play')) { selectSong(key); }
+            if (btn.classList.contains('play')) { selectSong(key); libraryModal.classList.add('hidden'); }
             if (btn.classList.contains('del'))  { deleteSong(key); }
+            return;
+        }
+
+        if (item) {
+            const key = item.dataset.key;
+            selectSong(key);
+            libraryModal.classList.add('hidden');
         }
     });
 
@@ -365,8 +375,8 @@ export function setupUI(handlers) {
             });
             const sequence = [...notes, ...pedalEvents].sort((a, b) => a.time - b.time);
             if (!sequence.length) throw new Error('Empty');
-            const key = `ONLINE_${Date.now()}`;
-            const song = { name: name.replace('.mid', '').replace(/-/g, ' '), data: sequence };
+            const key = `ONLINE_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+            const song = { name: name.replace('.mid', '').replace('.midi', '').replace(/-/g, ' ').replace(/_/g, ' '), data: sequence };
             state.playlists[key] = song;
             const saved = JSON.parse(localStorage.getItem('piano_saved_songs') || '{}');
             saved[key] = song; lsSet('piano_saved_songs', JSON.stringify(saved));
@@ -379,15 +389,22 @@ export function setupUI(handlers) {
         }
     };
 
-    midiUpload?.addEventListener('change', e => handleMidiFile(e.target.files[0]));
+    midiUpload?.addEventListener('change', e => {
+        if (e.target.files) {
+            Array.from(e.target.files).forEach(file => handleMidiFile(file));
+        }
+    });
 
     // Drag and Drop Bypass
     document.addEventListener('dragover', e => e.preventDefault());
     document.addEventListener('drop', e => {
         e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        if (file && (file.name.endsWith('.mid') || file.name.endsWith('.midi'))) {
-            handleMidiFile(file);
+        if (e.dataTransfer.files) {
+            Array.from(e.dataTransfer.files).forEach(file => {
+                if (file.name.endsWith('.mid') || file.name.endsWith('.midi')) {
+                    handleMidiFile(file);
+                }
+            });
         }
     });
 }
@@ -416,23 +433,51 @@ export function updateLibraryUI() {
         return true;
     });
 
-    // 2. Render Songs Grid
+    // 2. Render Songs Grid (Grouped by Composer for folder-like feel)
     if (songsList) {
         if (filteredSongs.length === 0) {
             songsList.innerHTML = `<div class="empty-state">No songs found for "${searchVal}"</div>`;
         } else {
-            songsList.innerHTML = filteredSongs.map(([k, s]) => `
-                <div class="library-item ${state.currentSongKey === k ? 'active' : ''}" data-key="${k}">
-                    <div class="item-visual">
-                        <span class="icon">${s.isLocal ? '🏛️' : s.isRecording ? '⏺️' : '☁️'}</span>
-                    </div>
-                    <div class="item-info">
-                        <h4>${s.name}</h4>
-                        <p>${s.isLocal ? 'Aether Library' : s.isRecording ? 'Your Recording' : 'Downloaded'}</p>
-                    </div>
-                    <div class="item-actions">
-                        <button class="lib-btn play" title="Play Now">▶</button>
-                        ${(!s.isLocal) ? `<button class="lib-btn del" title="Delete">✕</button>` : ''}
+            // Grouping logic
+            const groups = {};
+            filteredSongs.forEach(([k, s]) => {
+                let composer = 'Other';
+                for (const c of COMPOSERS) {
+                    if (s.name.toLowerCase().includes(c.toLowerCase())) {
+                        composer = c;
+                        break;
+                    }
+                }
+                if (!groups[composer]) groups[composer] = [];
+                groups[composer].push([k, s]);
+            });
+
+            // Sort groups: Composers first, then Other
+            const sortedGroupNames = Object.keys(groups).sort((a, b) => {
+                if (a === 'Other') return 1;
+                if (b === 'Other') return -1;
+                return a.localeCompare(b);
+            });
+
+            songsList.innerHTML = sortedGroupNames.map(groupName => `
+                <div class="library-group">
+                    <h3 class="group-header"><span class="icon">📁</span> ${groupName}</h3>
+                    <div class="group-content">
+                        ${groups[groupName].map(([k, s]) => `
+                            <div class="library-item ${state.currentSongKey === k ? 'active' : ''}" data-key="${k}">
+                                <div class="item-visual">
+                                    <span class="icon">${s.isLocal ? '🏛️' : s.isRecording ? '⏺️' : '☁️'}</span>
+                                </div>
+                                <div class="item-info">
+                                    <h4>${s.name.replace(groupName + ' – ', '').replace(groupName + ' - ', '').replace('Fr d ric', 'Frédéric')}</h4>
+                                    <p>${s.isLocal ? 'Aether Library' : s.isRecording ? 'Your Recording' : 'Downloaded'}</p>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="lib-btn play" title="Play Now">▶</button>
+                                    ${(!s.isLocal) ? `<button class="lib-btn del" title="Delete">✕</button>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             `).join('');
