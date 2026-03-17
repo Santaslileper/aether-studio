@@ -1,6 +1,6 @@
 import * as Tone from 'https://esm.sh/tone@15.1.22';
 import { state, lsSet } from './state.js';
-import { PIANO_CX } from './constants.js';
+import { PIANO_CX, revKeyMap, keyMap } from './constants.js';
 import { 
     instrAttack, instrRelease, keyNoise, vbBassSynth, reverb, limiter 
 } from './audio.js';
@@ -99,7 +99,7 @@ export function triggerFootBass(active) {
 export function setKeyLight(note, r, g, b) {
     // Note: ws handling is in main.js or can be kept in state
     if (state.ws?.readyState === WebSocket.OPEN) {
-        const k = state.revKeyMap[note];
+        const k = revKeyMap[note];
         if (k) state.ws.send(JSON.stringify({ type: 'light', note: k, r, g, b }));
     }
 }
@@ -236,7 +236,7 @@ export function highlightNarratorKey(note) {
 }
 
 function getModifierHint(targetNote) {
-    const { keyMap } = state; // Should be in constants but state has it too for ref
+    // keyMap is imported from constants.js
     for (const [key, base] of Object.entries(keyMap)) {
         if (!base || ['SUSTAIN', 'VB_PEDAL', 'SOFT_PEDAL'].includes(base)) continue;
         for (const [mod, shift, label] of [['', 0, ''], ['Shift', 1, 'Shift+'], ['Ctrl', -1, 'Ctrl+'], ['Alt', -2, 'Alt+']]) {

@@ -8,6 +8,7 @@ import {
 } from './piano.js';
 import { updateKeyLabels } from './visuals.js';
 import { getShiftedNote } from './utils.js';
+import { keyMap, revKeyMap } from './constants.js';
 
 function syncZoomUI() {
     const zsl = document.getElementById('camera-zoom');
@@ -73,7 +74,7 @@ export function setupInput() {
             return; 
         }
 
-        const base = state.keyMap[ks];
+        const base = keyMap[ks];
         if (!base) return;
 
         if (base === 'SUSTAIN')    { setSustain(true); return; }
@@ -124,7 +125,7 @@ export function setupInput() {
     window.addEventListener('keyup', e => {
         if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
         const ks = e.key?.toLowerCase() || '';
-        const base = state.keyMap[ks];
+        const base = keyMap[ks];
         if (base === 'SUSTAIN')    { setSustain(false); return; }
         if (base === 'VB_PEDAL')   { triggerFootBass(false); return; }
         if (base === 'SOFT_PEDAL') { if (state.audioStarted) Tone.Destination.volume.rampTo(Tone.gainToDb(state.masterVolume), 0.08); return; }
