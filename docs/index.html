@@ -17,7 +17,10 @@
         <div class="sidebar-header">
             <div style="display: flex; justify-content: space-between; align-items: start;">
                 <h1>AETHER STUDIO</h1>
-                <button id="debug-btn" class="btn-mini" style="width: auto; padding: 4px 10px;" onclick="toggleLogs()">DEBUG</button>
+                <div style="display:flex; gap: 4px;">
+                    <button id="piano-mode-btn" class="btn-mini" style="width: auto; padding: 4px 10px; background:var(--gold); color:#000; font-weight:bold;" onclick="togglePianoMode(true)">PIANO</button>
+                    <button id="debug-btn" class="btn-mini" style="width: auto; padding: 4px 10px;" onclick="toggleLogs()">DEBUG</button>
+                </div>
             </div>
             <div id="status-pill" class="status-pill active" style="margin-top: 5px; display: inline-block;">SYSTEM IDLE</div>
         </div>
@@ -112,8 +115,11 @@
         <!-- Transport bar -->
         <div class="transport-bar">
             <div class="now-playing-info">
-                <span id="np-title" class="np-title">AWAITING SELECTION</span>
-                <span id="np-composer" class="np-composer">AETHER SYSTEM // PROTOCOL STABILIZED</span>
+                <button id="vault-mode-btn" class="btn-mini" style="display:none; width: auto; margin-right:20px; padding: 0 12px; background:rgba(212,175,55,0.1); border:1px solid var(--gold); color:var(--gold); border-radius:15px; font-size:0.5rem; letter-spacing:1px; height: 28px; cursor:pointer;" onclick="togglePianoMode(false)">← OPEN STUDIO</button>
+                <div style="display:flex; flex-direction:column;">
+                    <span id="np-title" class="np-title">AWAITING SELECTION</span>
+                    <span id="np-composer" class="np-composer">AETHER SYSTEM // PROTOCOL STABILIZED</span>
+                </div>
             </div>
             <div class="transport-controls">
                 <button id="p-btn" class="btn-transport" onclick="triggerPlay()">PLAY</button>
@@ -247,6 +253,17 @@ setInterval(() => {
         checkAgent();
     }
 }, 3000);
+function togglePianoMode(isPiano) {
+    const wrapper = document.querySelector('.studio-wrapper');
+    const vaultBtn = document.getElementById('vault-mode-btn');
+    if (isPiano) {
+        wrapper.classList.add('piano-mode');
+        vaultBtn.style.display = 'inline-block';
+    } else {
+        wrapper.classList.remove('piano-mode');
+        vaultBtn.style.display = 'none';
+    }
+}
 </script>
 
 </body>

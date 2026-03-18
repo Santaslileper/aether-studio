@@ -27,6 +27,19 @@ body {
   display: flex;
   height: 100vh;
   width: 100vw;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.studio-wrapper.piano-mode .sidebar {
+  width: 0;
+  min-width: 0;
+  border-right: none;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.studio-wrapper.piano-mode .stage {
+  flex: 1;
 }
 
 /* ── SIDEBAR (VAULT) ── */

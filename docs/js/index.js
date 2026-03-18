@@ -1,7 +1,6 @@
-// ─── AGENT BASE URL ───────────────────────────────────────────────────────────
 // Reads from localStorage so users can change port without editing code.
-// Set via: localStorage.setItem('aurum_agent_url', 'http://localhost:3002')
-const API = localStorage.getItem('aurum_agent_url') || 'http://localhost:3001';
+// Set via: localStorage.setItem('aether_agent_url', 'http://localhost:3002')
+const API = localStorage.getItem('aether_agent_url') || 'http://localhost:3001';
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let library = [];
