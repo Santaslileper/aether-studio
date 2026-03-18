@@ -29,7 +29,7 @@ Santaslileper.github.io/aether-studio-piano   ←  GitHub Pages (this repo's /do
 git init
 git add .
 git commit -m "initial"
-gh repo create aether-studio-piano --public --push --source=.
+gh repo create aether-studio --public --push --source=.
 ```
 
 ### 2. Enable GitHub Pages
@@ -42,7 +42,7 @@ Settings → Pages → **Source: GitHub Actions** → Save
 Users visit your GitHub Pages URL. If the local agent isn't running, they see the install overlay. One paste in PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/Santaslileper/aether-studio-piano/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/Santaslileper/aether-studio/main/install.ps1 | iex
 ```
 
 That script:

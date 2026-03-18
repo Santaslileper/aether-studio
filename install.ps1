@@ -5,7 +5,7 @@
 $ErrorActionPreference = "Stop"
 $AgentDir = "$env:USERPROFILE\aether-studio"
 $AgentZip = "$env:TEMP\aether-agent.zip"
-$AgentUrl = "https://github.com/Santaslileper/aether-studio-piano/releases/latest/download/aether-agent.zip"
+$AgentUrl = "https://github.com/Santaslileper/aether-studio/releases/latest/download/aether-agent.zip"
 
 Write-Host ""
 Write-Host "  AETHER STUDIO // AGENT INSTALLER" -ForegroundColor Yellow
