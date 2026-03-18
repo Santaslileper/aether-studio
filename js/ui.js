@@ -22,11 +22,10 @@ export function setupUI(handlers) {
         const term = e.target.value.trim();
         if (!term || term.length < 2) { searchResults.classList.add('hidden'); return; }
 
-        const local = Object.entries(state.playlists).filter(([, s]) => s.name.toLowerCase().includes(term.toLowerCase()));
-        let html = local.map(([k, s]) => `<div class="search-item local" data-key="${k}"><span>${s.name}</span><span class="badge local">Local</span></div>`).join('');
-
-        const curated = CURATED_SONGS.filter(s => s.toLowerCase().includes(term.toLowerCase())).slice(0, 5);
-        html += curated.map(s => `<div class="search-item curated local" data-key="${s}"><span>${s}</span><span class="badge">Library</span></div>`).join('');
+        const local = Object.entries(state.playlists)
+            .filter(([, s]) => s.name.toLowerCase().includes(term.toLowerCase()))
+            .slice(0, 10); // Limit results for performance
+        let html = local.map(([k, s]) => `<div class="search-item local" data-key="${k}"><span>${s.name}</span><span class="badge local">Library</span></div>`).join('');
         
         if (html) { 
             searchResults.innerHTML = html; 

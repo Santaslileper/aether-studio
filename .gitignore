@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build/Dist
+dist/
+build/
+*.7z
+*.zip
+*.rar
+
+# Logs and status
+*.log
+status*.txt
+info.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp scripts
+convert_midis.js
+debug_import.js
+midis_list.txt
+
+# Local MIDI storage (already converted to assets)
+midis/

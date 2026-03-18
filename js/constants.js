@@ -43,37 +43,7 @@ export const SALAMANDER_URLS = {
 };
 export const SAL_BASE = 'https://tonejs.github.io/audio/salamander/';
 
-export const CURATED_SONGS = [
-    'Johann Sebastian Bach – Toccata and Fugue in D minor',
-    'Johann Sebastian Bach – Goldberg Variations',
-    'Johann Sebastian Bach – Well-Tempered Clavier',
-    'Ludwig van Beethoven – Moonlight Sonata',
-    'Ludwig van Beethoven – Für Elise',
-    'Ludwig van Beethoven – Appassionata Sonata',
-    'Ludwig van Beethoven – Pathétique Sonata',
-    'Wolfgang Amadeus Mozart – Rondo alla Turca',
-    'Wolfgang Amadeus Mozart – Piano Sonata No. 16',
-    'Frédéric Chopin – Nocturne Op. 9 No. 2',
-    'Frédéric Chopin – Ballade No. 1 in G minor',
-    'Frédéric Chopin – Raindrop Prelude',
-    'Frédéric Chopin – Heroic Polonaise',
-    'Frédéric Chopin – Minute Waltz',
-    'Franz Liszt – Hungarian Rhapsody No. 2',
-    'Franz Liszt – Liebesträume No. 3',
-    'Franz Liszt – La Campanella',
-    'Claude Debussy – Clair de Lune',
-    'Claude Debussy – Arabesque No. 1',
-    'Erik Satie – Gymnopédie No. 1',
-    'Erik Satie – Gnossienne No. 1',
-    'Sergei Rachmaninoff – Prelude in C-sharp minor',
-    'Maurice Ravel – Pavane for a Dead Princess',
-    'Edvard Grieg – Piano Concerto in A minor',
-    'Felix Mendelssohn – Rondo Capriccioso',
-    'Franz Schubert – Impromptu Op. 90 No. 3',
-    'Johannes Brahms – Intermezzo Op. 118 No. 2',
-    'Camille Saint-Saëns – The Swan',
-    'The Muffin Man',
-];
+export const CURATED_SONGS = [];
 
 export const COMPOSERS = [
     'Beethoven','Mozart','Bach','Chopin','Liszt','Debussy','Satie',
