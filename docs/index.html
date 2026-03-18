@@ -171,8 +171,11 @@
       Paste into PowerShell. Installs Python deps + Chromium, starts the agent. After install, double-click the desktop shortcut.
     </p>
     <div style="margin-top:24px; display:flex; gap:12px; align-items:center;">
-      <button onclick="checkAgent()" style="flex:1; background:none; border:1px solid #d4af37; color:#d4af37; font-family:'JetBrains Mono',monospace; font-size:0.65rem; padding:10px; cursor:pointer; text-transform:uppercase; letter-spacing:2px;">Check Again</button>
-      <input id="port-input" placeholder="Port (default 3001)" style="flex:1; background:none; border:1px solid rgba(255,255,255,0.15); color:#fff; font-family:'JetBrains Mono',monospace; font-size:0.65rem; padding:10px; box-sizing:border-box;" oninput="updateAgentUrl(this.value)">
+      <button onclick="launchAgent()" style="flex:2; background:#d4af37; border:none; color:#000; font-family:'JetBrains Mono',monospace; font-size:0.75rem; padding:12px; cursor:pointer; text-transform:uppercase; letter-spacing:2px; font-weight:bold;">Launch Aether App</button>
+      <button onclick="checkAgent()" style="flex:1; background:none; border:1px solid rgba(212,175,55,0.4); color:#d4af37; font-family:'JetBrains Mono',monospace; font-size:0.65rem; padding:12px; cursor:pointer; text-transform:uppercase; letter-spacing:2px;">Re-check</button>
+    </div>
+    <div style="margin-top:12px;">
+      <input id="port-input" placeholder="Port (default 3001)" style="width:100%; background:none; border:1px solid rgba(255,255,255,0.1); color:#fff; font-family:'JetBrains Mono',monospace; font-size:0.6rem; padding:8px; box-sizing:border-box;" oninput="updateAgentUrl(this.value)">
     </div>
   </div>
   <p style="color:rgba(255,255,255,0.15); font-size:0.5rem; margin-top:24px; letter-spacing:2px; text-transform:uppercase;">AETHER STUDIO // AWAITING CONNECTION</p>
@@ -181,14 +184,19 @@
 <script>
 // ── Agent connectivity ────────────────────────────────────────────────────────
 function getAgentUrl() {
-    return localStorage.getItem('aurum_agent_url') || 'http://localhost:3001';
+    return localStorage.getItem('aether_agent_url') || 'http://localhost:3001';
 }
 
 function updateAgentUrl(val) {
     const v = val.trim();
     if (!v) return;
     const url = v.startsWith('http') ? v : `http://localhost:${v}`;
-    localStorage.setItem('aurum_agent_url', url);
+    localStorage.setItem('aether_agent_url', url);
+}
+
+function launchAgent() {
+    // Triggers the custom protocol defined in install.ps1
+    window.location.href = 'aether://start';
 }
 
 function copyInstall(el) {
@@ -203,7 +211,12 @@ async function checkAgent() {
     const url = getAgentUrl();
     const overlay = document.getElementById('agent-offline');
     try {
-        const r = await fetch(`${url}/api/status`, { signal: AbortSignal.timeout(2500) });
+        const r = await fetch(`${url}/api/status`, { 
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'omit',
+            signal: AbortSignal.timeout(2000) 
+        });
         if (r.ok) {
             overlay.style.display = 'none';
             // Trigger init() from index.js if it hasn't run yet or re-run fetch
@@ -219,7 +232,7 @@ async function checkAgent() {
 
 // Check on load — hide overlay immediately if agent is already running
 window.addEventListener('load', () => {
-    const stored = localStorage.getItem('aurum_agent_url');
+    const stored = localStorage.getItem('aether_agent_url');
     if (stored) {
         const portInput = document.getElementById('port-input');
         if (portInput) portInput.placeholder = stored;
@@ -228,7 +241,12 @@ window.addEventListener('load', () => {
 });
 
 // Recheck every 3s while offline so it auto-connects when the agent starts
-setInterval(checkAgent, 3000);
+setInterval(() => {
+    const overlay = document.getElementById('agent-offline');
+    if (overlay.style.display !== 'none') {
+        checkAgent();
+    }
+}, 3000);
 </script>
 
 </body>

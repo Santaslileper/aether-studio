@@ -75,6 +75,24 @@ $Shortcut.WorkingDirectory = $AgentDir
 $Shortcut.Description = "Start Aether Studio local agent"
 $Shortcut.Save()
 
+# ── 6. Register Aether Protocol (for browser launching) ───────────────────────
+Write-Host "[6/6] Registering aether:// protocol..." -ForegroundColor Cyan
+try {
+    $ProtocolPath = "HKCU:\Software\Classes\aether"
+    if (!(Test-Path $ProtocolPath)) { New-Item $ProtocolPath -Force | Out-Null }
+    Set-ItemProperty $ProtocolPath "(default)" "URL:Aether Protocol"
+    Set-ItemProperty $ProtocolPath "URL Protocol" ""
+    
+    $CommandPath = "$ProtocolPath\shell\open\command"
+    if (!(Test-Path $CommandPath)) { New-Item $CommandPath -Recursive -Force | Out-Null }
+    # Points to the startup script
+    $CmdString = "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$StartupScript`""
+    Set-ItemProperty $CommandPath "(default)" $CmdString
+    Write-Host "      Protocol registered: aether://" -ForegroundColor Green
+} catch {
+    Write-Host "      Warning: Could not register protocol (requires permissions)." -ForegroundColor Yellow
+}
+
 Write-Host ""
 Write-Host "  INSTALLATION COMPLETE" -ForegroundColor Green
 Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor Green
