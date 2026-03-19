@@ -168,6 +168,7 @@ export function switchSong(dir = 1) {
     if (idx < 0) idx = keys.length - 1;
     if (idx >= keys.length) idx = 0;
     state.currentSongKey = keys[idx];
+    state.compiledMeasures = []; // FIX: Clear notation cache
     updateSongDisplay();
     if (wasPlaying) setTimeout(() => startAutoplay(), 80);
     if (wasNarrator) setTimeout(() => startNarrator(), 80);
@@ -185,6 +186,7 @@ export function updateSongDisplay() {
 export async function selectSong(key) {
     stopAutoplay(); stopNarrator();
     state.currentSongKey = key;
+    state.compiledMeasures = []; // FIX: Clear notation cache
     
     const song = state.playlists[key];
     if (song && !song.data && song.fileName) {
